@@ -1,0 +1,21 @@
+# Healthcare Analytics Simulation
+Predicts hospital readmission risk to prioritize patient care using XGBoost and BigQuery.
+
+## Dataset
+UCI Diabetes 130-Hospitals Dataset (101,766 records, scaled to 500,000 for scalability).
+
+## Tools
+- Python, Pandas, Scikit-learn, XGBoost
+- Google Cloud Platform (BigQuery)
+- Matplotlib/Seaborn (for visualizations on Linux; Power BI intended but not supported on Linux)
+
+## Results
+- F1 Score (Class 1): 0.298 (XGBoost with scale_pos_weight=4, threshold=0.3; reflects class imbalance challenge with 11.16% positive cases)
+- AUC-ROC: 0.701 (XGBoost with scale_pos_weight=4)
+- Visualizations: Risk score distribution, high-risk patients table, and age vs. hospitalizations plotted using Matplotlib due to Power BI compatibility issues on Linux.
+
+## Setup
+1. Clone: `git clone https://github.com/KyleSDeveloper/Healthcare_Analytics_Simulation.git`
+2. Install: `pip install -r requirements.txt`
+3. Run `notebooks/modeling.ipynb` to train the model and generate visualizations.
+4. View visualizations in the `visualizations/` directory (e.g., `risk_score_histogram.png`, `age_hospitalizations.png`).
