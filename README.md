@@ -1,29 +1,128 @@
-# Healthcare Analytics Simulation
+# 🏥 Predicting Hospital Readmissions with Machine Learning
 
-A machine learning project simulating hospital readmission prediction to support patient care prioritization. Built during Coding Nomads training, this demonstrates data processing, model training, and evaluation skills applicable to AI engineering.
+This project predicts patient hospital readmission using the [UCI Diabetes 130-US Hospitals dataset](https://archive.ics.uci.edu/ml/datasets/diabetes+130-us+hospitals+for+years+1999-2008). It applies advanced machine learning techniques to identify whether a patient is likely to be readmitted:
 
-## Key Features & Achievements
-- Developed an XGBoost model with Python, Pandas, and Scikit-learn to predict readmission risk, achieving 0.701 AUC-ROC on a dataset of 500,000+ patient records.
-- Processed data in BigQuery on GCP, applying statistical analysis for scalability and feature importance visualization using Matplotlib/Seaborn.
-- Optimized GitHub repo by excluding large files with recreation instructions.
+- **0** → Not readmitted  
+- **1** → Readmitted within 30 days  
+- **2** → Readmitted after 30 days  
 
-## Tech Stack
-- Python, Pandas, NumPy, Scikit-learn, XGBoost
-- GCP BigQuery for data engineering
-- Matplotlib/Seaborn for visualizations
+---
 
-## Project Structure
-- `notebook/`: Jupyter notebooks for data exploration, model training, and evaluation.
-- `data/`: Sample datasets or instructions to recreate (e.g., from Kaggle's MIMIC-III or similar public sources).
-- `scripts/`: Any Python scripts for pipelines.
+## 🎯 Project Goals
 
-## Setup & Run
-1. Clone the repo: `git clone https://github.com/KyleSDeveloper/Healthcare_Analytics_Simulation.git`
-2. Install dependencies: `pip install -r requirements.txt` (add a requirements.txt file if missing—list libs like pandas, scikit-learn, xgboost).
-3. Run the main notebook: Open in Jupyter and execute.
+- Clean and preprocess a real-world healthcare dataset
+- Perform exploratory data analysis (EDA)
+- Engineer relevant features
+- Handle class imbalance
+- Build a multiclass classification model using **XGBoost**
+- Tune hyperparameters using **Optuna**
+- Evaluate and interpret model performance
 
-## Results & Metrics
-- AUC-ROC: 0.701
-- Visualized risk scores and feature importance for actionable insights in care management.
+---
 
-See my resume for more on how this ties to ethical AI in healthcare.
+## 🧠 Machine Learning Approach
+
+### ✅ Techniques Used
+
+- XGBoost multiclass classification
+- Sample weighting to address class imbalance
+- Hyperparameter tuning with Optuna
+- Performance evaluation with classification reports and confusion matrices
+
+### 🧪 Label Encoding Logic
+
+| Label | Meaning                  |
+|-------|--------------------------|
+| 0     | Not readmitted           |
+| 1     | Readmitted within 30 days |
+| 2     | Readmitted after 30 days |
+
+---
+
+## 📊 Results
+
+| Metric         | Value    |
+|----------------|----------|
+| Accuracy       | 52.0%    |
+| Macro F1 Score | 0.45     |
+| Class 1 Recall | 31.0%    |
+| Model          | Tuned XGBoost (via Optuna) |
+
+- Optuna tuning improved macro F1 and recall for class 1 (early readmission)
+- Class imbalance was addressed using sample weighting
+
+---
+
+## 📁 Project Structure
+
+Healthcare_Analytics_Simulation/
+├── data/ # Raw and sample data (not tracked in Git)
+├── notebooks/
+│ ├── 01_EDA.ipynb # Exploratory data analysis
+│ ├── 02_Modeling_XGBoost.ipynb # Initial modeling attempts
+│ └── 03_Hyperparameter_Tuning_Optuna.ipynb
+├── models/
+│ └── best_xgb_model.json # Trained model
+├── src/
+│ ├── preprocessing.py # Feature engineering and encoding
+│ ├── train_model.py # Model training script
+├── requirements.txt
+├── README.md
+└── .gitignore
+
+
+---
+
+## ⚙️ How to Run
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/your-username/Healthcare_Analytics_Simulation.git
+cd Healthcare_Analytics_Simulation
+
+2. Install dependencies
+
+pip install -r requirements.txt
+
+3. Run notebooks
+
+Open notebooks in Jupyter or VSCode to explore and reproduce results.
+📦 Requirements
+
+    Python 3.12+
+
+    XGBoost
+
+    Scikit-learn
+
+    Optuna
+
+    Pandas, NumPy, Matplotlib
+
+Install all requirements:
+
+pip install -r requirements.txt
+
+📌 Key Learnings
+
+    How to handle class imbalance in multiclass problems
+
+    How to tune hyperparameters using Optuna
+
+    How to balance precision/recall tradeoffs in clinical data
+
+    How to structure and document ML projects for recruiters
+
+📜 License
+
+This project is for educational and portfolio purposes only. Not intended for clinical use.
+🙋‍♂️ Author
+
+Kyle Spengler
+
+    📧 kyle.s.delivery@gmail.com
+
+    🌐 LinkedIn
+
+    💻 GitHub
