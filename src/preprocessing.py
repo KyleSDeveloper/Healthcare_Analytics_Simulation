@@ -37,6 +37,8 @@ def clip_outliers_iqr(df):
     return df_clipped
 
 def load_and_preprocess_data(data_path: str) -> Tuple[pd.DataFrame, pd.Series]:
+    # Create a path object to the CSV
+    data_path = Path("../data/diabetic_data.csv")
     df = pd.read_csv(data_path)
 
     # Replace '?' with NaN
