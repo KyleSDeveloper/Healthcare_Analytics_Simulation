@@ -37,18 +37,20 @@ def clip_outliers_iqr(df):
     return df_clipped
 
 def load_and_preprocess_data(data_path: str) -> Tuple[pd.DataFrame, pd.Series]:
-    # Create a path object to the CSV
-    data_path = Path("../data/diabetic_data.csv")
+    data_path = Path(data_path)
     df = pd.read_csv(data_path)
 
     # Replace '?' with NaN
     df.replace('?', np.nan, inplace=True)
 
-    # Drop columns with too many missing or irrelevant values
-    df.drop(columns=['encounter_id','patient_nbr','weight','payer_code','medical_specialty','examide','citoglipton','metformin-rosiglitazone',
-    'metformin-pioglitazone'], inplace=True)
+    # Drop irrelevant/missing columns
+    df.drop(columns=[
+        'encounter_id', 'patient_nbr', 'weight', 'payer_code',
+        'medical_specialty', 'examide', 'citoglipton',
+        'metformin-rosiglitazone', 'metformin-pioglitazone'
+    ], inplace=True)
 
-    # Fill NA in race and one-hot encode
+    # Fill missing race and one-hot encode
     df['race'] = df['race'].fillna(df['race'].mode()[0])
     df = pd.get_dummies(df, columns=['race'], prefix='race')
 
@@ -60,20 +62,20 @@ def load_and_preprocess_data(data_path: str) -> Tuple[pd.DataFrame, pd.Series]:
     }
     df['age'] = df['age'].map(age_map).astype(int)
 
-    # Binary encode drug features
+    # Binary encode drug features (only if they exist)
     drug_columns = [
         'metformin', 'repaglinide', 'nateglinide', 'chlorpropamide',
         'glimepiride', 'acetohexamide', 'glipizide', 'glyburide',
         'tolbutamide', 'pioglitazone', 'rosiglitazone', 'acarbose',
-        'miglitol', 'troglitazone', 'tolazamide', 'examide',
-        'citoglipton', 'insulin', 'glyburide-metformin',
-        'glipizide-metformin', 'glimepiride-pioglitazone',
-        'metformin-rosiglitazone', 'metformin-pioglitazone'
+        'miglitol', 'troglitazone', 'tolazamide', 'insulin',
+        'glyburide-metformin', 'glipizide-metformin',
+        'glimepiride-pioglitazone'
     ]
     for col in drug_columns:
-        df[col] = df[col].apply(lambda x: 0 if x == 'No' else 1).astype(int)
+        if col in df.columns:
+            df[col] = df[col].apply(lambda x: 0 if x == 'No' else 1).astype(int)
 
-    # Binary encode change and diabetesMed
+    # Encode change and diabetesMed
     df['change'] = df['change'].apply(lambda x: 1 if x == 'Ch' else 0).astype(int)
     df['diabetesMed'] = df['diabetesMed'].apply(lambda x: 1 if x == 'Yes' else 0).astype(int)
 
@@ -86,12 +88,12 @@ def load_and_preprocess_data(data_path: str) -> Tuple[pd.DataFrame, pd.Series]:
         ['gender_Female', 'gender_Male', 'gender_Unknown/Invalid']
     ].astype(int)
 
-    # Fill NA and encode diag_1, diag_2, diag_3
+    # Map diag_1–3 to broad categories
     for col in ['diag_1', 'diag_2', 'diag_3']:
         df[col] = df[col].fillna('Unknown')
         df[col] = df[col].apply(map_diagnosis).astype(int)
 
-    # Convert readmitted to binary target
+    # Encode readmitted as multi-class target
     df['readmitted_binary'] = df['readmitted'].apply(
         lambda x: 1 if x == '<30' else (2 if x == '>30' else 0)
     )
@@ -100,12 +102,17 @@ def load_and_preprocess_data(data_path: str) -> Tuple[pd.DataFrame, pd.Series]:
     # Clip outliers
     df = clip_outliers_iqr(df)
 
-    # Cast all remaining object columns to category (or drop them if unneeded)
+    # Cast remaining object columns to category
     for col in df.select_dtypes(include='object').columns:
         df[col] = df[col].astype('category')
+
+    # Final one-hot encode all categorical variables
+    df = pd.get_dummies(df, drop_first=True)
 
     # Separate target and features
     y = df['readmitted_binary']
     X = df.drop(columns=['readmitted_binary'])
 
     return X, y
+
+
